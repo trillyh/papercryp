@@ -12,7 +12,7 @@ class Account:
         self.orders: Dict = {} 
         self.transaction_history = {}
         
-    def add_order(self, order_id: int, asset: str, order_type: str, quantity: float, price: float):
+    def add_order(self, new_order: Dict):
         """
         Add a new order to the orders dictionary.
         
@@ -22,13 +22,8 @@ class Account:
         :param quantity: u know 
         :param price: in dollars
         """        
-        self.orders[order_id] = {
-            "asset": asset,
-            "type": order_type,
-            "quantity": quantity,
-            "price": price,
-            "status": "open" 
-        }
+        order_id = new_order["order_id"]
+        self.orders[order_id] = new_order
         print(f"Added new order: {self.orders[order_id]}")
 
     def add_account_transaction(self, order: Dict):
@@ -45,11 +40,9 @@ class Account:
 if __name__ == "__main__":
     account = Account("trilly", initial_balance=10000)
     
-    # Add new orders
     account.add_order(order_id=1, asset="BTC", order_type="buy", quantity=0.1, price=30000)
     account.add_order(order_id=2, asset="ETH", order_type="sell", quantity=1.0, price=2000)
     
-    # Check orders
     print("All Orders:", account.orders)
 
 
