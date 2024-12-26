@@ -1,5 +1,5 @@
 from typing import Dict
-import sqlite3
+
 
 class Account:
     def __init__(self, name, initial_balance=0.0):
@@ -72,8 +72,8 @@ class Account:
 if __name__ == "__main__":
     account = Account("trilly", initial_balance=10000)
     
-    account.add_order(order_id=1, asset="BTC", order_type="buy", quantity=0.1, price=30000)
-    account.add_order(order_id=2, asset="ETH", order_type="sell", quantity=1.0, price=2000)
+#    account.add_order(order_id=1, asset="BTC", order_type="buy", quantity=0.1, price=30000)
+#    account.add_order(order_id=2, asset="ETH", order_type="sell", quantity=1.0, price=2000)
     
     print("All Orders:", account.orders)
 
