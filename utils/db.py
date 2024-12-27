@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, IntegrityError
 
 load_dotenv()
 class DatabaseUtils:
@@ -36,6 +36,10 @@ class DatabaseUtils:
         :param table_name: Name of the table to create.
         :param schema: SQL schema for the table.
         """
+        if not self.connection:
+            print("Error: No database connection.")
+            return
+
         try:
             cursor = self.connection.cursor()
             cursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} ({schema})")
@@ -53,18 +57,25 @@ class DatabaseUtils:
         :param query: The SQL query to execute.
         :param params: Parameters for the query (optional).
         """
+        if not self.connection:
+            print("Error: No database connection.")
+            return
+
+        cursor = None
         try:
             cursor = self.connection.cursor()
             cursor.execute(query, params)
             self.connection.commit()
             print("Query executed successfully.")
+
+        except IntegrityError as e:
+            if "FOREIGN KEY" in str(e):
+                print("Error: Foreign key constraint failed. Likely, the user_id does not exist in the users table.")
+            else:
+                print(f"Integrity Error: {e}")
         except Error as e:
             print(f"Error executing query: {e}")
             raise
         finally:
-            cursor.close()
-
-    def close(self):
-        if self.connection and self.connection.is_connected():
-            self.connection.close()
-            print("DB connection closed.")
+            if cursor:
+                cursor.close()

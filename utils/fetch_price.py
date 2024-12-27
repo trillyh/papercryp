@@ -2,7 +2,7 @@ import requests
 from typing import List
 
 BASE_URL = "https://api.geckoterminal.com/api/v2"
-API_KEY = "your_api_key_here"
+API_KEY = ""
 
 MARKET_PRICE_ENDPOINT = "/simple/networks/solana/token_price/"
 
@@ -28,9 +28,6 @@ def fetch_data(address: List[str], params=None):
     except requests.exceptions.RequestException as e:
         print(f"Error fetching prices: {e}")
         return None
-
-        
-        
 
 if __name__ == "__main__":
     address: List[str] = ["5odbSFH3kKHFNcy6Kai7ykm7Da9B55Kk9wgy4Fh8GSfh","HgBRWfYxEfvPhtqkaeymCQtHCrKE46qQ43pKe8HCpump"]

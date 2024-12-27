@@ -31,6 +31,7 @@ def test_create_user() -> str:
     db = DatabaseUtils()
     db.connect()
 
+
     # Create users table
     users_table_name = "users"
     users_schema = """
@@ -56,38 +57,53 @@ def test_create_user() -> str:
             db.execute_query(insert_user_query, (user_id, user["name"]))
             print(f"User '{user['name']}' added with ID: {user_id}")
 
-    db.close()
 
 
-def test_oders_table():
+
+def create_orders_table():
     db = DatabaseUtils()
     db.connect()
 
-
-    # Create table
+# Create table
     table_name = "orders"
-    schema = """
+    orders_schema = """
         id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id VARCHAR(36) NOT NULL,
         order_id VARCHAR(255) NOT NULL,
         asset VARCHAR(50),
         order_type VARCHAR(50),
         quantity FLOAT,
         price FLOAT,
-        status VARCHAR(20)
+        status VARCHAR(20),
+        FOREIGN KEY (user_id) REFERENCES users(id)
     """
-    db.create_table(table_name, schema)
-
-    insert_query = """
-        INSERT INTO orders (order_id, asset, order_type, quantity, price, status)
-        VALUES (%s, %s, %s, %s, %s, %s)
-    """
-    sample_data = ("12345", "BTC", "buy", 0.1, 30000, "open")
-    db.execute_query(insert_query, sample_data)
-
-    db.close()
-
+    db.create_table(table_name, orders_schema)
 
 # just for testing now
 if __name__ == "__main__":
-    test_create_user()
-    test_oders_table()
+    # CREATE TABLES
+    # test_create_user()
+    create_orders_table()
+
+    
+    #Test
+    db = DatabaseUtils()
+    db.connect()
+
+
+    
+    insert_order = """
+        INSERT INTO orders (user_id, order_id, asset, order_type, quantity, price, status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+    order_data = [
+        ("", "order1", "BTC", "buy", 0.1, 30000, "open"), 
+        ("", "order2", "ETH", "sell", 1.0, 2000, "open")             
+    ]
+
+    
+    for order in order_data:
+        db.execute_query(insert_order, order)
+
+
+    
