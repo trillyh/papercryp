@@ -70,14 +70,14 @@ def create_orders_table():
     table_name = "orders"
     orders_schema = """
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id VARCHAR(36) NOT NULL,
+        account_id INT NOT NULL,
         order_id VARCHAR(255) NOT NULL,
         asset VARCHAR(50),
         order_type VARCHAR(50),
         quantity FLOAT,
         price FLOAT,
         status VARCHAR(20),
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (account_id) REFERENCES accounts(account_id) ON DELETE CASCADE
     """
     db.create_table(table_name, orders_schema)
 
@@ -85,6 +85,8 @@ def create_orders_table():
     
 
 if __name__ == "__main__":
+    create_orders_table()
+
     account1 = account.Account("test_account", initial_balance=1000)
     
     order_id_1 = add_order(account1, asset="BTC", order_type="buy", quantity=0.1, price=30000)

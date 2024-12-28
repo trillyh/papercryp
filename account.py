@@ -10,6 +10,7 @@ class Account:
         Fields of an account:  
         """
         self.name = name
+        self.account_id = None
         self.solana_balance = initial_balance  # Cash balance in the account
         self.dollar_balance = 0 # sol * USD price
         self.net_worth = 0 # USD balance + holding
@@ -39,8 +40,27 @@ class Account:
         finally:
             cursor.close()
 
+    @classmethod
+    def get_account(cls, account_id: str) -> Optional["Account"]:
+        try:
+            query = "SELECT account_address, name, balance FROM accounts WHERE account_address = %s"
+            db = DatabaseUtils()
+            db.connect()
+            cursor = db.connection.cursor()
+            cursor.execute(query, (account_id,))
+            user = cursor.fetchone()
+            if user: 
+                account = cls(user[1], user[2])
+                account.account_id = account_id[0]
+                return account
+             
+        except Exception as e:
+            print(f"Error during login: {e}") 
+        finally:
+            db.close() 
+
     @classmethod        
-    def create_user(cls, name, initial_balance) -> Optional["Account"]:
+    def create_account(cls, name, initial_balance) -> Optional["Account"]:
         """
         Create a user account. 
         :param name: The name of the user to check.
@@ -57,9 +77,9 @@ class Account:
             try: 
                 user_id = str(uuid.uuid4())
                 insert_user_query = """
-                    INSERT INTO users (id, name) VALUES (%s, %s)
+                    INSERT INTO accounts (account_address, name, balance) VALUES (%s, %s, %s)
                 """
-                db.execute_query(insert_user_query, (user_id, name))
+                db.execute_query(insert_user_query, (user_id, name, initial_balance))
 
             except Exception as e:
                 print(f"Error while creating user {e}")

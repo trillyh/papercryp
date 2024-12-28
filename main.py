@@ -5,9 +5,11 @@ from account import Account
 
 account: Account = None
 def main():
-     while True:
+    global account
+    while True:
         if account:
-            ... # show dashboard
+            show_dashboard()
+            continue
         
         print("\n--- Main Menu ---")
         print("1. Login")
@@ -26,15 +28,51 @@ def main():
         else:
             print("Invalid choice. Please enter 1, 2, or 3.") 
 
+
 def login_user():
-    ...
+    """
+    Use user's id to login 
+    """
+    global account
+    while True:
+        account_id= input("Enter account's id: ")
+        account = Account.get_account(account_id=account_id)
+        if account:
+            print(f"Created and logged in! Welcome {account.name}")
+            break
+        else:
+            print(f"User not found. Please create an account first.")   
+             
+            
 
 def create_user():
-    name = input("Enter username: ")
-    initial_balance = float(input("Enter initial balance: "))
-    Account.create_user(name, initial_balance)
-    print()
+    global account
+    while True: 
+        name = input("Enter username: ")
+        initial_balance = float(input("Enter initial balance: "))
+        account = Account.create_account(name, initial_balance)
+        if account:
+            print(f"Created and logged in! Welcome {name}")
+            break
+
+
+def show_dashboard():
+    """Show the dashboard once logged in"""
+
+    global account
+
+    print("\n--- User Dashboard ---")
+    print(f"Welcome, {account.name}!")
+    print(f"Current Balance: ${account.solana_balance:.5f}")
+    print("\nTo log out, type 'logout'. To quit, type 'quit'.")
     
+    choice = input("Enter your choice: ").strip().lower()
+    if choice == "logout":
+        account = None
+        print("You have been logged out.")
+    elif choice == "quit":
+        print("Exiting the program. Goodbye!")
+        exit()
 
 # just for testing now
 if __name__ == "__main__": 
