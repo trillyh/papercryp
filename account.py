@@ -1,4 +1,7 @@
-from typing import Dict
+from typing import Dict, Optional
+import uuid
+from utils.db import DatabaseUtils
+
 
 
 class Account:
@@ -13,7 +16,59 @@ class Account:
         self.holdings: Dict[str, float] = {}
         self.orders: Dict = {} 
         self.transaction_history = {}
+
+    @classmethod    
+    def user_exists(cls, db: DatabaseUtils, name: str) -> bool:
+        """
+        Check if a user with the given name exists in the `users` table.
+
+        :param db: DatabaseUtils instance.
+        :param name: name to check
+        :return: True if the user exists, False otherwise.
+        """
+        query = "SELECT COUNT(*) FROM users WHERE name = %s"
+        try:
+            conn = db.connection
+            cursor = conn.cursor()
+            cursor.execute(query, (name,))
+            count = cursor.fetchone()[0]
+            return count > 0
+        except Exception as e:
+            print(f"Error checking if user exists: {e}")
+            return False
+        finally:
+            cursor.close()
+
+    @classmethod        
+    def create_user(cls, name, initial_balance) -> Optional["Account"]:
+        """
+        Create a user account. 
+        :param name: The name of the user to check.
+        :param initial_balance: init balance.
+        :return: None if acount already exist, Account instance otherwise.
+        """
+        try:
+            db = DatabaseUtils()
+            db.connect()
         
+            if cls.user_exists(db, name):
+                print("Create user error: User already exist")
+                return None
+            try: 
+                user_id = str(uuid.uuid4())
+                insert_user_query = """
+                    INSERT INTO users (id, name) VALUES (%s, %s)
+                """
+                db.execute_query(insert_user_query, (user_id, name))
+
+            except Exception as e:
+                print(f"Error while creating user {e}")
+                return None
+            return cls(name, initial_balance)
+
+        finally: 
+            db.close()
+             
     def add_order(self, new_order: Dict):
         """
         Add a new order to the orders dictionary.
@@ -66,7 +121,6 @@ class Account:
                 FOREIGN KEY (account_name) REFERENCES accounts (name)
             )
         """)
-
 
 
 if __name__ == "__main__":

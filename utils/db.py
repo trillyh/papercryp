@@ -79,3 +79,9 @@ class DatabaseUtils:
         finally:
             if cursor:
                 cursor.close()
+
+                
+    def close(self):
+        self.connection.close()
+        return True
+        
