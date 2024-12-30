@@ -43,8 +43,7 @@ def login_user():
         else:
             print(f"User not found. Please create an account first.")   
              
-            
-
+        
 def create_user():
     global account
     while True: 

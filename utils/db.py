@@ -73,9 +73,11 @@ class DatabaseUtils:
                 print("Error: Foreign key constraint failed. Likely, the user_id does not exist in the users table.")
             else:
                 print(f"Integrity Error: {e}")
+
         except Error as e:
             print(f"Error executing query: {e}")
             raise
+
         finally:
             if cursor:
                 cursor.close()

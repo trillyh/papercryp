@@ -1,6 +1,6 @@
 import uuid
 from account import Account
-from utils.db import DatabaseUtils  # Correctly import the Account class
+from utils.db import DatabaseUtils
 
 def generate_order_id() -> str:
     """
@@ -8,7 +8,7 @@ def generate_order_id() -> str:
     """
     return str(uuid.uuid4())
 
-def add_order(account_id,asset: str, order_type: str, quantity: float, price: float) -> str:
+def add_order(account_id, asset: str, order_type: str, quantity: float, price: float) -> str:
     """
     Add a new order to the orders dictionary.
     
@@ -19,33 +19,34 @@ def add_order(account_id,asset: str, order_type: str, quantity: float, price: fl
     :param price: in dollars
     """              
     order_id = generate_order_id()
-    new_order = {
-        "order_id": order_id, 
-        "asset": asset,
-        "type": order_type,
-        "quantity": quantity,
-        "price": price,
-        "status": "open" 
-    }
+    
+    if order_type not in ("buy", "sell"):
+        raise ValueError(f"Invalid order_type: {order_type}. Must be one of {("buy", "sell")}.")
+
+    elif quantity <= 0:
+        raise ValueError(f"Invalid quanity: {quantity}. Quantity must be larger than 0")
 
     try:
         db = DatabaseUtils
         db.connect()
 
         insert_order_query = """
-            INSERT INTO accounts (account_address, name, balance) VALUES (%s, %s, %s)
+            INSERT INTO orders (account_id, order_id, asset, order_type, quantity, price, status) VALUES (%s, %s, %s)
         """
+
+        order = (account_id, order_id, order_type, quantity, price, "open")
+        db.execute_query(insert_order_query, order)
 
     except Exception as e:
         print(e)
      
     finally:
-        db.close
+        db.close()
         
 
 
 
-# TEST FUNCTIONS
+# TEST FUNCTIONS - not using:w
 def test_generate_order_id():
     """
     Test to ensure order IDs are unique.
