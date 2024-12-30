@@ -1,5 +1,6 @@
 import uuid
-from account import Account  # Correctly import the Account class
+from account import Account
+from utils.db import DatabaseUtils  # Correctly import the Account class
 
 def generate_order_id() -> str:
     """
@@ -7,7 +8,7 @@ def generate_order_id() -> str:
     """
     return str(uuid.uuid4())
 
-def add_order(account: Account, asset: str, order_type: str, quantity: float, price: float) -> str:
+def add_order(account_id,asset: str, order_type: str, quantity: float, price: float) -> str:
     """
     Add a new order to the orders dictionary.
     
@@ -26,9 +27,22 @@ def add_order(account: Account, asset: str, order_type: str, quantity: float, pr
         "price": price,
         "status": "open" 
     }
-    account.add_order(new_order)
-    print(f"Added new order: {order_id}")
-    return order_id
+
+    try:
+        db = DatabaseUtils
+        db.connect()
+
+        insert_order_query = """
+            INSERT INTO accounts (account_address, name, balance) VALUES (%s, %s, %s)
+        """
+
+    except Exception as e:
+        print(e)
+     
+    finally:
+        db.close
+        
+
 
 
 # TEST FUNCTIONS

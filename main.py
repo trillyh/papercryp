@@ -36,7 +36,7 @@ def login_user():
     global account
     while True:
         account_id= input("Enter account's id: ")
-        account = Account.get_account(account_id=account_id)
+        account = Account.get_account(account_hash=account_id)
         if account:
             print(f"Created and logged in! Welcome {account.name}")
             break
@@ -65,14 +65,27 @@ def show_dashboard():
     print(f"Welcome, {account.name}!")
     print(f"Current Balance: ${account.solana_balance:.5f}")
     print("\nTo log out, type 'logout'. To quit, type 'quit'.")
+    print("Enter any command, separate by space")
     
-    choice = input("Enter your choice: ").strip().lower()
-    if choice == "logout":
+    user_input = input("Enter your choice: ").strip().lower()
+    user_input = user_input.split() 
+
+    command = user_input[0]
+    
+    if command == "logout":
         account = None
         print("You have been logged out.")
-    elif choice == "quit":
+    elif command == "quit":
         print("Exiting the program. Goodbye!")
         exit()
+
+    elif command == "buy":
+        print("Buy")
+
+    elif command == "sell":
+        print("sell")
+    
+    
 
 # just for testing now
 if __name__ == "__main__": 

@@ -41,17 +41,23 @@ class Account:
             cursor.close()
 
     @classmethod
-    def get_account(cls, account_id: str) -> Optional["Account"]:
+    def get_account(cls, account_hash: str) -> Optional["Account"]:
+        """
+        Get the account information from db, also set the account_id
+        
+        :param cls
+        :account_id: account_id
+        """
         try:
-            query = "SELECT account_address, name, balance FROM accounts WHERE account_address = %s"
+            query = "SELECT account_id, name, balance FROM accounts WHERE account_address = %s"
             db = DatabaseUtils()
             db.connect()
             cursor = db.connection.cursor()
-            cursor.execute(query, (account_id,))
+            cursor.execute(query, (account_hash,))
             user = cursor.fetchone()
             if user: 
                 account = cls(user[1], user[2])
-                account.account_id = account_id[0]
+                account.account_id = user[0]
                 return account
              
         except Exception as e:
@@ -88,20 +94,7 @@ class Account:
 
         finally: 
             db.close()
-             
-    def add_order(self, new_order: Dict):
-        """
-        Add a new order to the orders dictionary.
-        
-        :param order_id: Identifier for the order.
-        :param asset: Asset address
-        :param order_type: type of order ("buy" or "sell").
-        :param quantity: u know 
-        :param price: in dollars
-        """        
-        order_id = new_order["order_id"]
-        self.orders[order_id] = new_order
-        print(f"Added new order: {self.orders[order_id]}")
+            
 
     def add_account_transaction(self, order: Dict):
         pass
