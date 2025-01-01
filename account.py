@@ -27,7 +27,7 @@ class Account:
         :param name: name to check
         :return: True if the user exists, False otherwise.
         """
-        query = "SELECT COUNT(*) FROM users WHERE name = %s"
+        query = "SELECT COUNT(*) FROM accounts WHERE name = %s"
         try:
             conn = db.connection
             cursor = conn.cursor()

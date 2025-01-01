@@ -8,7 +8,7 @@ def generate_order_id() -> str:
     """
     return str(uuid.uuid4())
 
-def add_order(account_id, asset: str, order_type: str, quantity: float, price: float) -> str:
+def add_order(account_id, asset: str, order_type: str, amount: float, price: float) -> str:
     """
     Add a new order to the orders dictionary.
     
@@ -23,8 +23,8 @@ def add_order(account_id, asset: str, order_type: str, quantity: float, price: f
     if order_type not in ("buy", "sell"):
         raise ValueError(f"Invalid order_type: {order_type}. Must be one of {("buy", "sell")}.")
 
-    elif quantity <= 0:
-        raise ValueError(f"Invalid quanity: {quantity}. amount must be larger than 0")
+    elif amount <= 0:
+        raise ValueError(f"Invalid quanity: {amount}. amount must be larger than 0")
 
     try:
         db = DatabaseUtils()
@@ -34,7 +34,7 @@ def add_order(account_id, asset: str, order_type: str, quantity: float, price: f
             INSERT INTO orders (account_id, order_id, asset, order_type, amount, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
-        order = (account_id, order_id, asset, order_type, quantity, price, "open")
+        order = (account_id, order_id, asset, order_type, amount, price, "open")
         db.execute_query(insert_order_query, order)
 
     except Exception as e:

@@ -85,7 +85,7 @@ def show_dashboard():
         asset_address = user_input[1]
 
         try:
-            quantity = float(user_input[2])
+            amount = float(user_input[2])
         except ValueError:
             print("Invalid input. Please enter a valid number for amount.")
 
@@ -94,7 +94,7 @@ def show_dashboard():
         add_order(account_id= account.account_id,
                     order_type="buy",
                     asset=asset_address, 
-                    amount=quantity, 
+                    amount=amount, 
                     price=price)
 
         print("added order")
