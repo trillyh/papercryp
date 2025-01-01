@@ -2,13 +2,13 @@ import uuid
 from utils.db import DatabaseUtils
 import test
 from account import Account
-
+from order import add_order
 account: Account = None
 def main():
     global account
     while True:
         if account:
-            show_dashboard()
+            show_dashboard() 
             continue
         
         print("\n--- Main Menu ---")
@@ -54,7 +54,6 @@ def create_user():
             print(f"Created and logged in! Welcome {name}")
             break
 
-
 def show_dashboard():
     """Show the dashboard once logged in"""
 
@@ -79,7 +78,28 @@ def show_dashboard():
         exit()
 
     elif command == "buy":
-        print("Buy")
+        if len(user_input) != 4:
+            print("Enter in the form: buy (asset_address) (quantity) (price)")
+            return
+
+        asset_address = user_input[1]
+
+        try:
+            quantity = float(user_input[2])
+        except ValueError:
+            print("Invalid input. Please enter a valid number for quantity.")
+
+        price = user_input[3]
+
+        add_order(account_id= account.account_id,
+                    order_type="buy",
+                    asset=asset_address, 
+                    quantity=quantity, 
+                    price=price)
+
+        print("added order")
+    
+            
 
     elif command == "sell":
         print("sell")
