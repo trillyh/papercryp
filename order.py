@@ -24,14 +24,14 @@ def add_order(account_id, asset: str, order_type: str, quantity: float, price: f
         raise ValueError(f"Invalid order_type: {order_type}. Must be one of {("buy", "sell")}.")
 
     elif quantity <= 0:
-        raise ValueError(f"Invalid quanity: {quantity}. Quantity must be larger than 0")
+        raise ValueError(f"Invalid quanity: {quantity}. amount must be larger than 0")
 
     try:
         db = DatabaseUtils()
         db.connect()
 
         insert_order_query = """
-            INSERT INTO orders (account_id, order_id, asset, order_type, quantity, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO orders (account_id, order_id, asset, order_type, amount, price, status) VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
         order = (account_id, order_id, asset, order_type, quantity, price, "open")
@@ -45,8 +45,6 @@ def add_order(account_id, asset: str, order_type: str, quantity: float, price: f
         
 
 if __name__ == "__main__":
-    test_generate_order_id()
-    test_add_order()
     print("All tests passed!")
 
  

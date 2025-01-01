@@ -79,7 +79,7 @@ def show_dashboard():
 
     elif command == "buy":
         if len(user_input) != 4:
-            print("Enter in the form: buy (asset_address) (quantity) (price)")
+            print("Enter in the form: buy (asset_address) (amount) (price)")
             return
 
         asset_address = user_input[1]
@@ -87,14 +87,14 @@ def show_dashboard():
         try:
             quantity = float(user_input[2])
         except ValueError:
-            print("Invalid input. Please enter a valid number for quantity.")
+            print("Invalid input. Please enter a valid number for amount.")
 
         price = user_input[3]
 
         add_order(account_id= account.account_id,
                     order_type="buy",
                     asset=asset_address, 
-                    quantity=quantity, 
+                    amount=quantity, 
                     price=price)
 
         print("added order")

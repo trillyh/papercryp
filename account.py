@@ -105,37 +105,6 @@ class Account:
     def recalculate_account_networth(self, order: Dict):
         pass
 
-    def create_table(self):
-        """
-        Create tables for account
-        """
-        self.db_connection = sqlite3.connect("accounts.db")
-        self.create_table()
-        cursor = self.db_connection.cursor()
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS accounts (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                solana_balance REAL,
-                dollar_balance REAL,
-                net_worth REAL
-            )
-        """)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                account_name TEXT,
-                order_id TEXT,
-                asset TEXT,
-                order_type TEXT,
-                quantity REAL,
-                price REAL,
-                status TEXT,
-                FOREIGN KEY (account_name) REFERENCES accounts (name)
-            )
-        """)
-
-
 if __name__ == "__main__":
     account = Account("trilly", initial_balance=10000)
     
