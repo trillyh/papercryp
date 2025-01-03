@@ -55,8 +55,10 @@ class Account:
                         account = cls(user[1], user[2])
                         account.account_id = user[0]
                         return account
+                    return None #To ignore mypy
         except Exception as e:
             print(f"Error during login: {e}")
+            return None
         
     @classmethod        
     async def create_account(cls, db: AsyncDatabaseUtils, name, initial_balance) -> Optional["Account"]:
@@ -86,6 +88,7 @@ class Account:
         
         except Exception as e:
             print(f"Error in create_account: {e}")
+            return None
 
     def add_account_transaction(self, order: Dict):
         pass

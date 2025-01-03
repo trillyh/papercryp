@@ -3,23 +3,23 @@ import aiomysql
 import os
 from dotenv import load_dotenv
 from pathlib import Path
-
-dotenv_path = Path("utils/.env") #change env loc
-load_dotenv(dotenv_path=dotenv_path)
-
-host = os.getenv("MYSQL_HOST")
-port = int(os.getenv("MYSQL_PORT", 3306))
-user = os.getenv("MYSQL_USER")
-password = os.getenv("MYSQL_PASSWORD")
-database = os.getenv("MYSQL_DATABASE")
+from utils.db import AsyncDatabaseUtils
 
 
-loop = asyncio.get_event_loop()
 
-async def test_example():
-    conn = await aiomysql.connect(host=host, port=port,
-                                  user=user, password=password, db=database,
-                                  loop=loop)
+
+async def check_market():
+    dotenv_path = Path("utils/.env") #change env loc
+    load_dotenv(dotenv_path=dotenv_path)
+
+    host = os.getenv("MYSQL_HOST") 
+    assert host is not None, "Can't find Host env"
+    port = int(os.getenv("MYSQL_PORT", 3306))
+    user = os.getenv("MYSQL_USER")
+    password = os.getenv("MYSQL_PASSWORD")
+    database = os.getenv("MYSQL_DATABASE")
+
+
 
     cur = await conn.cursor()
     await cur.execute("SELECT account_id FROM accounts")
@@ -30,3 +30,20 @@ async def test_example():
     conn.close()
 
 loop.run_until_complete(test_example())
+
+
+
+
+async def init_db_pool() -> AsyncDatabaseUtils:
+    db = AsyncDatabaseUtils()
+    await db.connect()
+    return db
+
+
+async def close_db_pool(db: AsyncDatabaseUtils):
+    await db.close()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
